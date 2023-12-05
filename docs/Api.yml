@@ -89,6 +89,35 @@ paths:
           description: Account deleted successfully
         404:
           description: Account not found
+  /transactions:
+    get:
+      tags:
+        - "Transaction"
+      summary: Retrieve all transactions 
+      responses:
+        200:
+          description: A list of all transactions 
+          content:
+            application/json:
+              schema: 
+                type: array 
+                items: 
+                  $ref: "#/components/schemas/Transaction"
+    post:
+      tags:
+        - "Transaction"
+      summary: Create a new transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transaction"
+      responses:
+        '201':
+          description: Transaction created successfully
+        '400':
+          description: Bad request
 components:
   schemas:
     Account: 
@@ -107,3 +136,18 @@ components:
           format: float
         currency:
           type: string
+    Transaction: 
+      type: object
+      properties:
+        id: 
+          type: integer
+        description:
+          type: string
+        amount: 
+          type: integer
+        currency: 
+          type: string
+        accountId:
+          type: integer
+        account: 
+          $ref: "#/components/schemas/Account"
