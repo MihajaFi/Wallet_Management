@@ -89,7 +89,7 @@ paths:
           description: Account deleted successfully
         404:
           description: Account not found
-  /transactions:
+  /transaction:
     get:
       tags:
         - "Transaction"
@@ -128,7 +128,7 @@ paths:
           type: integer
     get:
       tags:
-        - "Transactions"
+        - "Transaction"
       summary: Retrieve transaction details by id
       responses:
         '200':
@@ -139,6 +139,87 @@ paths:
                 $ref: "#/components/schemas/Transaction"
         '404':
           description: Transaction not found
+  /currency:
+    get:
+      tags:
+        - Currency
+      summary: Get all currency
+      operationId: getAllCurrency
+      description: get all currency with pagination
+      responses:
+        200:
+          description: Currency details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Currency not found
+    put:
+      tags:
+        - Currency
+      summary: Save or Update currency
+      operationId: saveOrUpdateCurrency
+      description: Save list of new currency or update if already exist 
+      security:
+        - oauth2: [ admin ]
+      requestBody:
+        required: true
+        description: List of the currency to save or update
+        content:
+          application/json: 
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Currency'
+      responses:
+        200:
+          description: Currency details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Currency not found
+    post:
+      tags:
+        - "Currency"
+      summary: Create a new currency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Currency"
+      responses:
+        '201':
+          description: Currency created successfully
+        '400':
+          description: Bad request
+  /currency/{currencyId}:
+    get:
+      tags:
+        - Currency
+      summary: Get one currency
+      operationId: getOneCurrency
+      description: Get one currency by a given id
+      parameters:
+        - in: path
+          name: currencyId
+          schema:
+            type: string 
+            format: uuid
+          description: Id of the currency to get
+          required: true
+      responses:
+        200:
+          description: Currency details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Currency not found
 components:
   schemas:
     Account: 
@@ -172,3 +253,28 @@ components:
           type: integer
         account: 
           $ref: "#/components/schemas/Account"
+    Currency:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '550e8400-e29b-41d4-a716-446655440000'
+        name:
+          type: string
+          example: 'Ariary'
+        code:
+          type: string
+          example: 'MGA'
+        symbol:
+          type: string
+          example: 'Ar'
+        exchange_rate:
+          type: number
+          format: float
+          example: 0.0002
+        updated_at:
+          type: string
+          format: date
+          description: current_date if not specified
+          example: '2023-01-01'
