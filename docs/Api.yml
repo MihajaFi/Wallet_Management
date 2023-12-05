@@ -118,6 +118,27 @@ paths:
           description: Transaction created successfully
         '400':
           description: Bad request
+  /transactions/{transactionId}:
+    parameters:
+      - name: transactionId
+        in: path
+        required: true
+        description: ID of the transaction
+        schema:
+          type: integer
+    get:
+      tags:
+        - "Transactions"
+      summary: Retrieve transaction details by id
+      responses:
+        '200':
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        '404':
+          description: Transaction not found
 components:
   schemas:
     Account: 
