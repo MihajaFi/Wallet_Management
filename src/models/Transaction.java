@@ -1,18 +1,19 @@
 package models;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
 public class Transaction {
     private int id;
     private String label;
-    private double amount;
+    private BigDecimal amount;
     private LocalDateTime date;
     private TransactionType type;
     private String idAccount ;
 
 
-    public Transaction(int id, String label, double amount, LocalDateTime date, TransactionType type,String idAccount) {
+    public Transaction(int id, String label, BigDecimal amount, LocalDateTime date, TransactionType type,String idAccount) {
         this.id = id;
         this.label = label;
         this.amount = amount;
@@ -21,7 +22,7 @@ public class Transaction {
         this.idAccount = idAccount ;
     }
 
-    public Transaction(String label, double amount, LocalDateTime date, TransactionType type, String idAccount) {
+    public Transaction(String label, BigDecimal amount, LocalDateTime date, TransactionType type, String idAccount) {
         this.label = label;
         this.amount = amount;
         this.date = date;
@@ -45,11 +46,11 @@ public class Transaction {
         this.label = label;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
