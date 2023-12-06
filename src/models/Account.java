@@ -1,26 +1,26 @@
 package models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Account {
     private String id;
     private String name;
-    private double balance;
-    private LocalDateTime updatedDate ; 
-    private int id_currency;
-    private int id_transaction  ;
+    private BigDecimal balance;
+    private LocalDateTime updatedDate ;
+    private int idCurrency;
     private AccountType type ;
     private List<Transaction> transactions ;
 
-    public Account(String id, String name, double balance, int id_currency, int id_transaction, AccountType type, List<Transaction> transactions) {
+    public Account(String id, String name, BigDecimal balance, LocalDateTime updatedDate, int idCurrency,  AccountType type) {
         this.id = id;
         this.name = name;
         this.balance = balance;
-        this.id_currency = id_currency;
-        this.id_transaction = id_transaction;
+        this.updatedDate = updatedDate;
+        this.idCurrency = idCurrency;
         this.type = type;
-        this.transactions = transactions;
+       
     }
 
     public String getId() {
@@ -39,30 +39,31 @@ public class Account {
         this.name = name;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
-    public int getId_currency() {
-        return id_currency;
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
     }
 
-    public void setId_currency(int id_currency) {
-        this.id_currency = id_currency;
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
-    public int getId_transaction() {
-        return id_transaction;
+    public int getIdCurrency() {
+        return idCurrency;
     }
 
-    public void setId_transaction(int id_transaction) {
-        this.id_transaction = id_transaction;
+    public void setIdCurrency(int idCurrency) {
+        this.idCurrency = idCurrency;
     }
 
+    
     public AccountType getType() {
         return type;
     }
@@ -85,8 +86,8 @@ public class Account {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", balance=" + balance +
-                ", id_currency=" + id_currency +
-                ", id_transaction=" + id_transaction +
+                ", updatedDate=" + updatedDate +
+                ", idCurrency=" + idCurrency +
                 ", type=" + type +
                 ", transactions=" + transactions +
                 '}';
