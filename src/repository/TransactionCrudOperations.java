@@ -4,6 +4,7 @@ import configuration.ConnectionConfig;
 import models.Transaction;
 import models.TransactionType;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
                 for (Transaction transaction : toSave){
                     preparedStatement.setInt(1 , transaction.getId());
                     preparedStatement.setString(2 , transaction.getLabel());
-                    preparedStatement.setDouble(3 , transaction.getAmount());
+                    preparedStatement.setBigDecimal(3 , transaction.getAmount());
                     preparedStatement.setObject(4 , transaction.getDate());
                     preparedStatement.setObject(5 , transaction.getType() ,Types.OTHER );
                     preparedStatement.setString(6 , transaction.getIdAccount());
@@ -72,13 +73,13 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1 , toUpdate.getLabel());
-            preparedStatement.setDouble(2 , toUpdate.getAmount());
+            preparedStatement.setBigDecimal(2 , toUpdate.getAmount());
             preparedStatement.setObject(3 , toUpdate.getDate());
             preparedStatement.setObject(4 , toUpdate.getType() ,Types.OTHER );
             preparedStatement.setString(5 , toUpdate.getIdAccount());
             preparedStatement.setInt(6 , toUpdate.getId());
             preparedStatement.setString(7 , toUpdate.getLabel());
-            preparedStatement.setDouble(8 , toUpdate.getAmount());
+            preparedStatement.setBigDecimal(8 , toUpdate.getAmount());
             preparedStatement.setObject(9 , toUpdate.getDate());
             preparedStatement.setObject(10 , toUpdate.getType() ,Types.OTHER );
             preparedStatement.setString(11 , toUpdate.getIdAccount());
@@ -101,7 +102,7 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
 
                 preparedStatement.setInt(1 , toSave.getId());
                 preparedStatement.setString(2 , toSave.getLabel());
-                preparedStatement.setDouble(3 , toSave.getAmount());
+                preparedStatement.setBigDecimal(3 , toSave.getAmount());
                 preparedStatement.setObject(4 , toSave.getDate());
                 preparedStatement.setObject(5 , toSave.getType() ,Types.OTHER );
                 preparedStatement.setString(6 , toSave.getIdAccount());
@@ -120,7 +121,7 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
     private Transaction extractTransactionFromResultSet(ResultSet resultSet) throws SQLException {
         int transactionId = resultSet.getInt("id") ;
         String description  = resultSet.getString("label");
-        Double amount = resultSet.getDouble("amount");
+        BigDecimal amount = resultSet.getBigDecimal("amount");
         LocalDateTime date  = resultSet.getTimestamp("date").toLocalDateTime();
         TransactionType type = TransactionType.valueOf(resultSet.getString("type"));
         String accountId = resultSet.getString("id_account") ;
