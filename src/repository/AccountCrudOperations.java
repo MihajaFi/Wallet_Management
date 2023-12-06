@@ -2,11 +2,11 @@ package repository;
 
 import configuration.ConnectionConfig;
 import models.Account;
+import models.AccountType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +20,13 @@ public class AccountCrudOperations implements CrudOperations<Account> {
         connection = connex.createConnection() ;
     }
     private Account extractAccountFromResultSet(ResultSet resultSet) throws SQLException{
-        String accountId = resultSet.getString("accountId") ;
-        String accountName = resultSet.getString("accountName");
-        Double balance = resultSet.getDouble("balance") ;
-        String currencyCode = resultSet.getString("currencyCode") ;
-        return new Account(accountId ,accountName, balance ,currencyCode) ;
+        String id = resultSet.getString("id") ;
+        String name = resultSet.getString("name");
+        BigDecimal balance = resultSet.getBigDecimal("balance") ;
+        LocalDateTime updatedDate = resultSet.getTimestamp("updatedDate").toLocalDateTime() ;
+        int idCurrency = resultSet.getInt("id_currency") ;
+        AccountType type = AccountType.valueOf(resultSet.getString("type"));
+        return new Account(id , name , balance, updatedDate, idCurrency , type) ;
     }
     @Override
     public List<Account> findAll() {
@@ -48,16 +50,18 @@ public class AccountCrudOperations implements CrudOperations<Account> {
     public List<Account> saveAll(List<Account> toSave) {
         List<Account> savedAccounts = new ArrayList<>() ;
         try{
-            String sql = "INSERT INTO Account (accountId, accountName, balance, currencyCode) " +
-                         "VALUES (?, ?, ?, ?) " +
-                         "ON CONFLICT (accountId) DO NOTHING";
+            String sql = "INSERT INTO Account (id, name, balance, updatedDate , id_currency , type) " +
+                         "VALUES (?, ?, ?, ?,?,?) " +
+                         "ON CONFLICT (id) DO NOTHING";
             getConnection();
             try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
                 for (Account account : toSave){
-                    preparedStatement.setString(1 , account.getAccountId());
-                    preparedStatement.setString(2 , account.getAccountName());
-                    preparedStatement.setDouble(3 , account.getBalance());
-                    preparedStatement.setString(4 , account.getCurrencyCode());
+                    preparedStatement.setString(1 , account.getId());
+                    preparedStatement.setString(2 , account.getName());
+                    preparedStatement.setBigDecimal(3 , account.getBalance());
+                    preparedStatement.setObject(4 , account.getUpdatedDate());
+                    preparedStatement.setInt(5 , account.getIdCurrency());
+                    preparedStatement.setObject(6 , account.getType() , Types.OTHER);
 
                     int rowsAffected = preparedStatement.executeUpdate();
                     if (rowsAffected > 0){
@@ -74,13 +78,16 @@ public class AccountCrudOperations implements CrudOperations<Account> {
 
     @Override
     public Account update(Account toUpdate) {
-        String sql = "UPDATE Account SET accountName = ? , balance=? , currencyCode=? WHERE accountId = ?" ;
+        String sql = "UPDATE Account SET name = ? , balance=? , updatedDate=? , id_currency=? , type= ? WHERE id = ?" ;
         getConnection();
         try(PreparedStatement preparedStatement =connection.prepareStatement(sql)){
-            preparedStatement.setString(1 , toUpdate.getAccountName());
-            preparedStatement.setDouble(2, toUpdate.getBalance());
-            preparedStatement.setString(3 , toUpdate.getCurrencyCode());
-            preparedStatement.setString(4 ,toUpdate.getAccountId());
+
+            preparedStatement.setString(1 , toUpdate.getName());
+            preparedStatement.setBigDecimal(2 , toUpdate.getBalance());
+            preparedStatement.setObject(3 , toUpdate.getUpdatedDate());
+            preparedStatement.setInt(4 , toUpdate.getIdCurrency());
+            preparedStatement.setObject(5 , toUpdate.getType() ,Types.OTHER);
+            preparedStatement.setString(6 , toUpdate.getId());
             preparedStatement.executeUpdate() ;
         } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -91,17 +98,19 @@ public class AccountCrudOperations implements CrudOperations<Account> {
     @Override
     public Account save(Account toSave) {
         try{
-            String sql = "INSERT INTO Account (accountId, accountName, balance, currencyCode) " +
-                         "VALUES (?, ?, ?, ?) " +
-                         "ON CONFLICT (accountId) DO NOTHING";
+            String sql = "INSERT INTO Account (id, name, balance, updatedDate , id_currency , type) " +
+                         "VALUES (?, ?, ?, ?,?,?) " +
+                         "ON CONFLICT (id) DO NOTHING";
 
             getConnection();
             try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
 
-                    preparedStatement.setString(1 , toSave.getAccountId());
-                    preparedStatement.setString(2 , toSave.getAccountName());
-                    preparedStatement.setDouble(3 , toSave.getBalance());
-                    preparedStatement.setString(4 , toSave.getCurrencyCode());
+                preparedStatement.setString(1 , toSave.getId());
+                preparedStatement.setString(2 , toSave.getName());
+                preparedStatement.setBigDecimal(3 , toSave.getBalance());
+                preparedStatement.setObject(4 , toSave.getUpdatedDate());
+                preparedStatement.setInt(5 , toSave.getIdCurrency());
+                preparedStatement.setObject(6 , toSave.getType() ,Types.OTHER);
                     preparedStatement.executeUpdate();
             }
         }catch (SQLException e) {
