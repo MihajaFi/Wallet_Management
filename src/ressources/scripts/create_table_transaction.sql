@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Transaction (
     label VARCHAR(255),
     amount DOUBLE PRECISION NOT NULL,
     date TIMESTAMP NOT NULL,
-    type TransactionType NOT NULL
+    type TransactionType NOT NULL,
+    id_account VARCHAR(50) REFERENCES Account(id)
 );
 

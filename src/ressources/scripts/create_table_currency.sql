@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Currency (
     code VARCHAR(3) NOT NULL
 );
 
- insert into Currency (currencyCode , currencyName)
+ insert into Currency (code ,name)
  VALUES 
  ('MGA' , 'ARIARY'),
  ('EUR' , 'EURO');
