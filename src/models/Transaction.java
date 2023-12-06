@@ -1,21 +1,32 @@
 package models;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class Transaction {
     private int id;
     private String label;
     private double amount;
-    private Date date;
+    private LocalDateTime date;
     private TransactionType type;
+    private String idAccount ;
 
 
-    public Transaction(int id, String label, double amount, Date date, TransactionType type) {
+    public Transaction(int id, String label, double amount, LocalDateTime date, TransactionType type,String idAccount) {
         this.id = id;
         this.label = label;
         this.amount = amount;
         this.date = date;
         this.type = type;
+        this.idAccount = idAccount ;
+    }
+
+    public Transaction(String label, double amount, LocalDateTime date, TransactionType type, String idAccount) {
+        this.label = label;
+        this.amount = amount;
+        this.date = date;
+        this.type = type;
+        this.idAccount = idAccount;
     }
 
     public int getId() {
@@ -42,11 +53,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -56,6 +67,14 @@ public class Transaction {
 
     public void setType(TransactionType type) {
         this.type = type;
+    }
+
+    public String getIdAccount() {
+        return idAccount;
+    }
+
+    public void setIdAccount(String idAccount) {
+        this.idAccount = idAccount;
     }
 
     @Override
