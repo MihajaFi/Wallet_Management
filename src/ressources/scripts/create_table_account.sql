@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Account (
     id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(50) NOT NULL ,
     balance DECIMAL(18 , 5) NOT NULL,
+    updatedDate TIMESTAMP NOT NULL,
     id_currency INT REFERENCES Currency(id),
     type AccountType NOT NULL,
     CONSTRAINT positiveBalance CHECK (balance >= 0),
