@@ -3,44 +3,35 @@ package models;
 import java.sql.Date;
 
 public class Transaction {
-    private int transactionId;
-    private Date date;
-    private String description;
+    private int id;
+    private String label;
     private double amount;
+    private Date date;
     private TransactionType type;
-    private String accountId ;
 
-    public Transaction(int transactionId, Date date, String description, double amount, TransactionType type, String accountId) {
-        this.transactionId = transactionId;
-        this.date = date;
-        this.description = description;
+
+    public Transaction(int id, String label, double amount, Date date, TransactionType type) {
+        this.id = id;
+        this.label = label;
         this.amount = amount;
-        this.type = type;
-        this.accountId = accountId;
-    }
-
-    public int getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
         this.date = date;
+        this.type = type;
     }
 
-    public String getDescription() {
-        return description;
+    public int getId() {
+        return id;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public double getAmount() {
@@ -51,6 +42,14 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public TransactionType getType() {
         return type;
     }
@@ -59,23 +58,14 @@ public class Transaction {
         this.type = type;
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
     @Override
     public String toString() {
         return "Transaction{" +
-                "transactionId=" + transactionId +
-                ", date=" + date +
-                ", description='" + description + '\'' +
+                "id=" + id +
+                ", label='" + label + '\'' +
                 ", amount=" + amount +
+                ", date=" + date +
                 ", type=" + type +
-                ", accountId='" + accountId + '\'' +
                 '}';
     }
 }
