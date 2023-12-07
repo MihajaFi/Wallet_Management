@@ -437,28 +437,24 @@ components:
         - Banque
         - Mobile Money
         - Cash
-    Currency:
+    Transaction: 
       type: object
       properties:
-        id:
+        id: 
+          type: integer
+          example: 1
+        label: 
+          type: string 
+          description: Transaction name 
+          example: Bank loan
+        amount:
+          type: number 
+          example: 5000
+        date-time:
           type: string
-          format: uuid
-          example: '550e8400-e29b-41d4-a716-446655440000'
-        name:
+          format: date-time
+        type:
           type: string
-          example: 'Ariary'
-        code:
-          type: string
-          example: 'MGA'
-        symbol:
-          type: string
-          example: 'Ar'
-        exchange_rate:
-          type: number
-          format: float
-          example: 0.0002
-        updated_at:
-          type: string
-          format: date
-          description: current_date if not specified
-          example: '2023-01-01'
+          enum:
+            - debit
+            - credit
