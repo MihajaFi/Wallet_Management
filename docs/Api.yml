@@ -6,21 +6,37 @@ info:
 servers:
   - url: https://walletManagement.com
 paths:
-  /account:
+  /currency:
     get:
       tags:
-        - "Account"
-      summary: Get all account
-      description: A list of account 
+        - "Currency"
+      summary: Get all currency
+      description: Get all currency
       responses:
         200:
-          description: The list of filtered accounts 
+          description: A list of currency
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Account"
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
     post: 
       tags:
         - "Account"
