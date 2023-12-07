@@ -50,8 +50,8 @@ public class CurrencyCrudOperations implements CrudOperations<Currency>{
             try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 for (Currency currency : toSave){
                     preparedStatement.setInt(1 , currency.getId());
-                    preparedStatement.setString(2 , currency.getCurrencyCode());
-                    preparedStatement.setString(3, currency.getCurrencyName());
+                    preparedStatement.setString(2 , currency.getCode());
+                    preparedStatement.setString(3, currency.getName());
 
                     int rowsAffected = preparedStatement.executeUpdate() ;
                     if (rowsAffected > 0 ){
@@ -69,8 +69,8 @@ public class CurrencyCrudOperations implements CrudOperations<Currency>{
     public Currency update(Currency toUpdate) {
         String sql = "UPDATE Currency SET currencyCode = ?, currencyName = ? WHERE id = ?";
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-            preparedStatement.setString(1, toUpdate.getCurrencyCode());
-            preparedStatement.setString(2, toUpdate.getCurrencyName());
+            preparedStatement.setString(1, toUpdate.getCode());
+            preparedStatement.setString(2, toUpdate.getName());
             preparedStatement.setInt(3, toUpdate.getId());
 
             preparedStatement.executeUpdate();
@@ -92,8 +92,8 @@ public class CurrencyCrudOperations implements CrudOperations<Currency>{
             try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
 
                 preparedStatement.setInt(1 , toSave.getId());
-                preparedStatement.setString(2 , toSave.getCurrencyCode());
-                preparedStatement.setString(3, toSave.getCurrencyName());
+                preparedStatement.setString(2 , toSave.getCode());
+                preparedStatement.setString(3, toSave.getName());
                 preparedStatement.executeUpdate();
             }
         }catch (SQLException e) {

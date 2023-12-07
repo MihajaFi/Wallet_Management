@@ -1,81 +1,91 @@
-package models;
+    package models;
 
-import java.sql.Date;
+    import java.math.BigDecimal;
+    import java.sql.Date;
+    import java.time.LocalDateTime;
 
-public class Transaction {
-    private int transactionId;
-    private Date date;
-    private String description;
-    private double amount;
-    private TransactionType type;
-    private String accountId ;
+    public class Transaction {
+        private int id;
+        private String label;
+        private BigDecimal amount;
+        private LocalDateTime date;
+        private TransactionType type;
+        private String idAccount ;
 
-    public Transaction(int transactionId, Date date, String description, double amount, TransactionType type, String accountId) {
-        this.transactionId = transactionId;
-        this.date = date;
-        this.description = description;
-        this.amount = amount;
-        this.type = type;
-        this.accountId = accountId;
+
+        public Transaction(int id, String label, BigDecimal amount, LocalDateTime date, TransactionType type,String idAccount) {
+            this.id = id;
+            this.label = label;
+            this.amount = amount;
+            this.date = date;
+            this.type = type;
+            this.idAccount = idAccount ;
+        }
+
+        public Transaction(String label, BigDecimal amount, LocalDateTime date, TransactionType type, String idAccount) {
+            this.label = label;
+            this.amount = amount;
+            this.date = date;
+            this.type = type;
+            this.idAccount = idAccount;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+            this.amount = amount;
+        }
+
+        public LocalDateTime getDate() {
+            return date;
+        }
+
+        public void setDate(LocalDateTime date) {
+            this.date = date;
+        }
+
+        public TransactionType getType() {
+            return type;
+        }
+
+        public void setType(TransactionType type) {
+            this.type = type;
+        }
+
+        public String getIdAccount() {
+            return idAccount;
+        }
+
+        public void setIdAccount(String idAccount) {
+            this.idAccount = idAccount;
+        }
+
+        @Override
+        public String toString() {
+            return "Transaction{" +
+                    "id=" + id +
+                    ", label='" + label + '\'' +
+                    ", amount=" + amount +
+                    ", date=" + date +
+                    ", type=" + type +
+                    '}';
+        }
     }
-
-    public int getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "transactionId=" + transactionId +
-                ", date=" + date +
-                ", description='" + description + '\'' +
-                ", amount=" + amount +
-                ", type=" + type +
-                ", accountId='" + accountId + '\'' +
-                '}';
-    }
-}

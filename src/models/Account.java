@@ -1,51 +1,77 @@
 package models;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
-    private String accountId ;
-    private String accountName ;
-    private double balance;
-    private String currencyCode;
+    private String id;
+    private String name;
+    private BigDecimal balance;
+    private LocalDateTime updatedDate ;
+    private int idCurrency;
+    private AccountType type ;
     private List<Transaction> transactions ;
 
-    public Account(String accountId, String accountName, double balance, String currencyCode) {
-        this.accountId = accountId;
-        this.accountName = accountName;
+    public Account(String id, String name, BigDecimal balance, LocalDateTime updatedDate, int idCurrency,  AccountType type) {
+        this.id = id;
+        this.name = name;
         this.balance = balance;
-        this.currencyCode = currencyCode;
+        this.updatedDate = updatedDate;
+        this.idCurrency = idCurrency;
+        this.type = type;
+        this.transactions = new ArrayList<>() ;
+       
     }
 
-    public String getAccountId() {
-        return accountId;
+    public String getId() {
+        return id;
     }
 
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public String getName() {
+        return name;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public int getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(int idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    
+    public AccountType getType() {
+        return type;
+    }
+
+    public void setType(AccountType type) {
+        this.type = type;
     }
 
     public List<Transaction> getTransactions() {
@@ -59,11 +85,42 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "accountId='" + accountId + '\'' +
-                ", accountName='" + accountName + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", balance=" + balance +
-                ", currencyCode='" + currencyCode + '\'' +
+                ", updatedDate=" + updatedDate +
+                ", idCurrency=" + idCurrency +
+                ", type=" + type +
                 ", transactions=" + transactions +
                 '}';
     }
+
+    public void creditTransactionAccount(BigDecimal amount){
+        balance = balance.add(amount);
+    }
+    public void debitTransactionAccount(BigDecimal amount){
+        balance = balance.subtract(amount) ;
+    }
+
+    public Account transactionInAnAccount(Account account, BigDecimal amount, TransactionType transactionType) {
+        LocalDateTime transactionDate = LocalDateTime.now();
+        Transaction transaction = new Transaction("Transaction", amount, transactionDate, transactionType, account.getId());
+
+        if (transactionType == TransactionType.CREDIT) {
+            account.creditTransactionAccount(amount);
+        } else if (transactionType == TransactionType.DEBIT) {
+            if (account.getBalance().compareTo(amount) < 0) {
+                throw new RuntimeException("Balance not enough to achieve the debit");
+            }
+            account.debitTransactionAccount(amount);
+        }
+
+        List<Transaction> transactions = account.getTransactions();
+        transactions.add(transaction);
+        account.setTransactions(transactions);
+        account.setUpdatedDate(transactionDate);
+
+        return account;
+    }
+
 }

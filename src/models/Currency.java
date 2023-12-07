@@ -2,14 +2,13 @@ package models;
 
 public class Currency {
     private int id ;
-    private String currencyCode;
+    private String name;
+    private String code;
 
-    private String currencyName;
-
-    public Currency(int id, String currencyCode, String currencyName) {
+    public Currency(int id, String code, String name) {
         this.id = id;
-        this.currencyCode = currencyCode;
-        this.currencyName = currencyName;
+        this.code = code;
+        this.name = name;
     }
 
     public int getId() {
@@ -20,28 +19,28 @@ public class Currency {
         this.id = id;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getCurrencyName() {
-        return currencyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCurrencyName(String currencyName) {
-        this.currencyName = currencyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "Currency{" +
                 "id=" + id +
-                ", currencyCode='" + currencyCode + '\'' +
-                ", currencyName='" + currencyName + '\'' +
+                ", currencyCode='" + code + '\'' +
+                ", currencyName='" + name + '\'' +
                 '}';
     }
 }
