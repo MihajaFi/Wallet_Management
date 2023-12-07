@@ -249,27 +249,37 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/InternalServerError'
-  /transactions/{transactionId}:
-    parameters:
-      - name: transactionId
-        in: path
-        required: true
-        description: ID of the transaction
-        schema:
-          type: integer
+  /account/{accountId}:
     get:
       tags:
-        - "Transaction"
-      summary: Retrieve transaction details by id
+        - "Account"
+      summary: Get one account
+      description: Get one account by Id
       responses:
-        '200':
-          description: Transaction details
+        200:
+          description: Account details 
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        '404':
-          description: Transaction not found
+              schema: 
+                $ref: '#/components/schemas/Account'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
   /currency:
     get:
       tags:
