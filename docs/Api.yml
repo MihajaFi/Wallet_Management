@@ -388,6 +388,39 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/InternalServerError'
+  /transaction/{transactionId}:
+    get:
+      tags:
+        - "Transaction"
+      summary: Get one transaction
+      description: Get one transaction given by If
+      responses:
+        200:
+          description: Transaction details
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
 components:
   schemas:
     Currency: 
