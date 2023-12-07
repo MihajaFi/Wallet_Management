@@ -1,6 +1,8 @@
 package repository;
 
 import configuration.ConnectionConfig;
+import models.Account;
+import models.AccountType;
 import models.Transaction;
 import models.TransactionType;
 
@@ -69,7 +71,7 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
     @Override
     public Transaction update(Transaction toUpdate) {
         String sql = "UPDATE Transaction SET label = ?, amount = ?, date = ?, type = ?, id_account = ? WHERE id = ? AND (label <> ? OR amount <> ? OR date <> ? OR type <> ? OR id_account <> ?)";
-
+        getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1 , toUpdate.getLabel());
@@ -93,28 +95,30 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
 
     @Override
     public Transaction save(Transaction toSave) {
+        getConnection();
         try{
-            String sql = "INSERT INTO Transaction (id, label, amount ,date,type, id_account) " +
-                    "VALUES (?, ?, ?, ?,?,?) " +
-                    "ON CONFLICT (id) DO NOTHING";
-            getConnection();
-            try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+                String sql = "SELECT * FROM Account WHERE id = ? " ;
+                PreparedStatement preparedStatement  = connection.prepareStatement(sql);
+                preparedStatement.setString(1  , toSave.getIdAccount());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()){
+                    String id = resultSet.getString("id") ;
+                    String name = resultSet.getString("name");
+                    BigDecimal balance = resultSet.getBigDecimal("balance") ;
+                    LocalDateTime updatedDate = resultSet.getTimestamp("updatedDate").toLocalDateTime() ;
+                    int idCurrency = resultSet.getInt("id_currency") ;
+                    AccountType type = AccountType.valueOf(resultSet.getString("type"));
+                    Account account = new Account(id , name, balance, updatedDate,idCurrency ,type) ;
+                    changeAccountAfterTransaction(account,toSave);
+                }
 
-                preparedStatement.setInt(1 , toSave.getId());
-                preparedStatement.setString(2 , toSave.getLabel());
-                preparedStatement.setBigDecimal(3 , toSave.getAmount());
-                preparedStatement.setObject(4 , toSave.getDate());
-                preparedStatement.setObject(5 , toSave.getType() ,Types.OTHER );
-                preparedStatement.setString(6 , toSave.getIdAccount());
-
-                preparedStatement.executeUpdate();
 
 
 
-            }
-        }catch (SQLException e) {
+            } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         return null ;
     }
 
@@ -126,5 +130,65 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
         TransactionType type = TransactionType.valueOf(resultSet.getString("type"));
         String accountId = resultSet.getString("id_account") ;
         return new Transaction(transactionId ,description ,amount, date ,type,accountId) ;
+
     }
+
+
+    public static void changeAccountAfterTransaction(Account account , Transaction transaction){
+        getConnection();
+        switch (transaction.getType()){
+            case CREDIT :
+                BigDecimal updatedBalance = account.getBalance().add(transaction.getAmount()) ;
+                try{
+                    String sql = "INSERT INTO Transaction (id, label, amount ,date,type, id_account) " +
+                            "VALUES (?, ?, ?, ?, ?,?) " +
+                            "ON CONFLICT (id) " +
+                            "DO UPDATE SET amount = EXCLUDED.amount, label = EXCLUDED.label, " +
+                            "type = EXCLUDED.type, date = EXCLUDED.date , id_account = EXCLUDED.id_account";
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql) ;
+                    preparedStatement.setInt(1 , transaction.getId());
+                    preparedStatement.setString(2 , transaction.getLabel());
+                    preparedStatement.setBigDecimal(3 , transaction.getAmount());
+                    preparedStatement.setObject(4 , transaction.getDate());
+                    preparedStatement.setObject(5 , transaction.getType() ,Types.OTHER );
+                    preparedStatement.setString(6 , transaction.getIdAccount());
+                    preparedStatement.executeUpdate();
+                    String update = "UPDATE Account SET balance = ? WHERE id = ?" ;
+                    PreparedStatement ps = connection.prepareStatement(update) ;
+                    ps.setBigDecimal(1  , updatedBalance);
+                    ps.setString(2 ,account.getId());
+                    ps.executeUpdate() ;
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            break;
+            case DEBIT :
+                BigDecimal debitedBalance = account.getBalance().subtract(transaction.getAmount());
+                try {
+                    String sql = "INSERT INTO Transaction (id, label, amount ,date,type, id_account) " +
+                            "VALUES (?, ?, ?, ?, ?,?) " +
+                            "ON CONFLICT (id) " +
+                            "DO UPDATE SET amount = EXCLUDED.amount, label = EXCLUDED.label, " +
+                            "type = EXCLUDED.type, date = EXCLUDED.date , id_account = EXCLUDED.id_account";
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql) ;
+                    preparedStatement.setInt(1 , transaction.getId());
+                    preparedStatement.setString(2 , transaction.getLabel());
+                    preparedStatement.setBigDecimal(3 , transaction.getAmount());
+                    preparedStatement.setObject(4 , transaction.getDate());
+                    preparedStatement.setObject(5 , transaction.getType() ,Types.OTHER );
+                    preparedStatement.setString(6 , transaction.getIdAccount());
+                    preparedStatement.executeUpdate();
+                    String update = "UPDATE Account SET balance = ? WHERE id = ?" ;
+                    PreparedStatement ps = connection.prepareStatement(update) ;
+                    ps.setBigDecimal(1  , debitedBalance);
+                    ps.setString(2 ,account.getId());
+                    ps.executeUpdate() ;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+        }
+    }
+
 }
