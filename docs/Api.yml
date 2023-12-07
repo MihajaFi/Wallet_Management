@@ -280,87 +280,114 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/InternalServerError'
-  /currency:
+  /transaction:
     get:
       tags:
-        - Currency
-      summary: Get all currency
-      operationId: getAllCurrency
-      description: get all currency with pagination
+        - "Transaction"
+      summary: Get all transactions 
+      description: A list of transactions
       responses:
         200:
-          description: Currency details
+          description: A list of transactions 
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Currency"
+              schema: 
+                $ref: '#/components/schemas/Transaction'
         400:
-          description: Currency not found
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError' 
+    post: 
+      tags:
+        - "Transaction"
+      summary: Create a new transaction 
+      requestBody: 
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Transaction'
+      responses:
+        201:
+          description: Transaction created successfully
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
     put:
       tags:
-        - Currency
-      summary: Save or Update currency
-      operationId: saveOrUpdateCurrency
-      description: Save list of new currency or update if already exist 
-      security:
-        - oauth2: [ admin ]
-      requestBody:
+        - "Transaction"
+      summary: Save a new transaction or update if already exist 
+      requestBody: 
         required: true
-        description: List of the currency to save or update
-        content:
-          application/json: 
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Currency'
-      responses:
-        200:
-          description: Currency details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Currency"
-        400:
-          description: Currency not found
-    post:
-      tags:
-        - "Currency"
-      summary: Create a new currency
-      requestBody:
-        required: true
+        description: List of transaction to save or update
         content:
           application/json:
-            schema:
-              $ref: "#/components/schemas/Currency"
-      responses:
-        '201':
-          description: Currency created successfully
-        '400':
-          description: Bad request
-  /currency/{currencyId}:
-    get:
-      tags:
-        - Currency
-      summary: Get one currency
-      operationId: getOneCurrency
-      description: Get one currency by a given id
-      parameters:
-        - in: path
-          name: currencyId
-          schema:
-            type: string 
-            format: uuid
-          description: Id of the currency to get
-          required: true
+            schema: 
+              type: array
+              items:
+                $ref: '#/components/schemas/Transaction'
       responses:
         200:
-          description: Currency details
+          description: A list of transaction
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Currency"
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
         400:
-          description: Currency not found
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
 components:
   schemas:
     Currency: 
