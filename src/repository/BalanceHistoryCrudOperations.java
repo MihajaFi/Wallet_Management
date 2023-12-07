@@ -23,11 +23,13 @@ public class BalanceHistoryCrudOperations {
     }
     public List<BalanceHistory> findBalanceHistory(String id) {
         List<BalanceHistory> balanceHistories = new ArrayList<>();
-        String sql = "SELECT t.date , a.balance \n" +
-                "FROM Transaction t \n" +
-                "INNER JOIN Account a ON a.id = t.id_account \n" +
-                "WHERE t.id_account = ? \n" +
-                "ORDER BY t.date DESC";
+        String sql = "SELECT  \n" +
+                "    Transaction.date,  \n" +
+                "    SUM(Transaction.amount) OVER (PARTITION BY Transaction.id_account ORDER BY Transaction.date) AS balance\n" +
+                "FROM\n" +
+                "    Transaction\n" +
+                "WHERE\n" +
+                "    Transaction.id_account = ?";
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, id);
