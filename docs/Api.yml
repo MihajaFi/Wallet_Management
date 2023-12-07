@@ -238,22 +238,30 @@ paths:
           description: Currency not found
 components:
   schemas:
-    Account: 
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/UserAccount"
-    UserAccount:
-      type: object
+    Currency: 
+      type: object 
       properties:
-        id:
+        id: 
           type: integer
-        name:
+          example: 1
+        name: 
           type: string
-        balance:
-          type: number
-          format: float
-        currency:
+          example: Euro
+        code:
           type: string
+          example: EUR
+    BadRequestBody:
+      example:
+          message: BAD REQUEST
+          body: null
+    ForbiddenBody:
+      example:
+          message: FORBIDDEN
+          body: null
+    InternalServerError:
+      example:
+          message: INTERNAL SERVER ERROR  
+          body: null
     Transaction: 
       type: object
       properties:
