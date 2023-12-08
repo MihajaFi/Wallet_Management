@@ -95,32 +95,6 @@ public class Account {
                 '}';
     }
 
-    public void creditTransactionAccount(BigDecimal amount){
-        balance = balance.add(amount);
-    }
-    public void debitTransactionAccount(BigDecimal amount){
-        balance = balance.subtract(amount) ;
-    }
 
-    public Account transactionInAnAccount(Account account, BigDecimal amount, TransactionType transactionType) {
-        LocalDateTime transactionDate = LocalDateTime.now();
-        Transaction transaction = new Transaction("Transaction", amount, transactionDate, transactionType, account.getId());
-
-        if (transactionType == TransactionType.CREDIT) {
-            account.creditTransactionAccount(amount);
-        } else if (transactionType == TransactionType.DEBIT) {
-            if (account.getBalance().compareTo(amount) < 0) {
-                throw new RuntimeException("Balance not enough to achieve the debit");
-            }
-            account.debitTransactionAccount(amount);
-        }
-
-        List<Transaction> transactions = account.getTransactions();
-        transactions.add(transaction);
-        account.setTransactions(transactions);
-        account.setUpdatedDate(transactionDate);
-
-        return account;
-    }
 
 }
