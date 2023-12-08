@@ -1,9 +1,15 @@
 import Com.test.TransactionCrudTest;
+import services.MoneyTransfer;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
-    public static void main(String[] args) {
-     TransactionCrudTest.TransactionTest();
+    public static void main(String[] args) throws SQLException {
+//     TransactionCrudTest.TransactionTest();
+        BigDecimal value1 = new BigDecimal("45000") ;
+        MoneyTransfer.transferMoney("Koto" , "Fifaliana" ,value1 );
     }
 }
