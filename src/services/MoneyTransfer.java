@@ -38,8 +38,8 @@ public class MoneyTransfer {
 
 
 
-        insertTransaction(11, "Send money", transferAmount, TransactionType.DEBIT, senderId);
-        insertTransaction(12, "Receive money", transferAmount, TransactionType.CREDIT, receivedId);
+        insertTransaction(15, "Send money", transferAmount, TransactionType.DEBIT, senderId);
+        insertTransaction(16, "Receive money", transferAmount, TransactionType.CREDIT, receivedId);
         recordTransferHistory(senderTransactionId ,receiverTransactionId);
 
 
