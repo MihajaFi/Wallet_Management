@@ -5,10 +5,8 @@ import models.TransactionType;
 import repository.TransactionCrudOperations;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
+import java.time.LocalDateTime;
 
 public class MoneyTransfer {
     private static Connection connection;
@@ -27,7 +25,7 @@ public class MoneyTransfer {
         BigDecimal senderBalance = getAccountBalance(senderId);
 
         if (transferAmount.compareTo(senderBalance) > 0) {
-            throw new RuntimeException("Fonds insuffisants");
+            throw new RuntimeException("Funds insufficient");
         }
 
         updateAccountBalance(senderId, senderBalance.subtract(transferAmount));
@@ -35,8 +33,16 @@ public class MoneyTransfer {
         BigDecimal receiverBalance = getAccountBalance(receivedId);
         updateAccountBalance(receivedId, receiverBalance.add(transferAmount));
 
-        insertTransaction(5, "Envoi d'argent", transferAmount, TransactionType.DEBIT, senderId);
-        insertTransaction(6, "Réception d'argent", transferAmount, TransactionType.CREDIT, receivedId);
+        int senderTransactionId = getLatestTransactionId(senderId);
+        int receiverTransactionId = getLatestTransactionId(receivedId);
+
+
+
+        insertTransaction(11, "Send money", transferAmount, TransactionType.DEBIT, senderId);
+        insertTransaction(12, "Receive money", transferAmount, TransactionType.CREDIT, receivedId);
+        recordTransferHistory(senderTransactionId ,receiverTransactionId);
+
+
     }
 
     public static BigDecimal getAccountBalance(String accountId) throws SQLException {
@@ -68,12 +74,67 @@ public class MoneyTransfer {
         }
     }
 
+    public static int getLatestTransactionId(String accountId) throws SQLException {
+        String sql = "SELECT id FROM Transaction WHERE id_account = ? ORDER BY date DESC LIMIT 1";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, accountId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                } else {
+                    throw new RuntimeException("Nothing transaction on this  " + accountId);
+                }
+            }
+        }
+    }
+
+    public static void recordTransferHistory(int senderTransactionId, int receiverTransactionId) throws SQLException {
+        String sql = "INSERT INTO TransferHistory (sender_id, receiver_id, transfer_date) VALUES (?, ?, NOW())";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, senderTransactionId);
+            preparedStatement.setInt(2, receiverTransactionId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void displayTransferHistoryInDateRange(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
+        String sql = "SELECT t1.id_account AS sender_id, t2.id_account AS receiver_id, th.transfer_date, t1.amount AS sender_amount " +
+                "FROM TransferHistory th " +
+                "JOIN Transaction t1 ON th.sender_id = t1.id " +
+                "JOIN Transaction t2 ON th.receiver_id = t2.id " +
+                "WHERE th.transfer_date BETWEEN ? AND ? " +
+                "ORDER BY th.transfer_date";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setObject(1, startDate);
+            preparedStatement.setObject(2, endDate);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                System.out.println("History of transfer :");
+                System.out.println("| Sender ID | Receiver ID | Transfer Date | Amount |");
+                System.out.println("|-----------|-------------|---------------------|---------|");
+
+                while (resultSet.next()) {
+                    String senderId = resultSet.getString("sender_id");
+                    String receiverId = resultSet.getString("receiver_id");
+                    String transferDate = resultSet.getString("transfer_date");
+                    BigDecimal senderAmount = resultSet.getBigDecimal("sender_amount");
+
+                    System.out.printf("| %-9s | %-11s | %-19s | %-7s |\n",
+                            senderId, receiverId, transferDate, senderAmount);
+                }
+            }
+        }
+    }
+
+
     private static BigDecimal executeQueryAndGetSingleResult(PreparedStatement preparedStatement) throws SQLException {
         try (var resultSet = preparedStatement.executeQuery()) {
             if (resultSet.next()) {
                 return resultSet.getBigDecimal(1);
             } else {
-                throw new RuntimeException("Aucun résultat trouvé");
+                throw new RuntimeException("Nothing result find");
             }
         }
     }
