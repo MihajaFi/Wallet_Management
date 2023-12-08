@@ -24,7 +24,7 @@ public class CurrencyCrudTest {
         for (Currency currency :currencies){
             System.out.println(currency);
         }
-        euroCurrency.setCurrencyName("European Euro");
+        euroCurrency.setName("European Euro");
         allCurrency.update(euroCurrency);
     }
 }

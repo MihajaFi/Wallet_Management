@@ -1,31 +1,33 @@
 package Com.test;
 
-import models.Transaction;
-import models.TransactionType;
+import models.*;
+import repository.AccountCrudOperations;
+import repository.HistoryCrudOperation;
 import repository.TransactionCrudOperations;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionCrudTest {
     public static void TransactionTest(){
-        Transaction transaction = new Transaction(123456 , java.sql.Date.valueOf("2022-01-01") , "Ty le vola" , 45000.0 , TransactionType.CREDIT, "azer12456") ;
-        Transaction secondTransaction = new Transaction(789101 , java.sql.Date.valueOf("2022-01-04") ,"manala" , 78000.0 , TransactionType.DEBIT , "azer1244") ;
-        TransactionCrudOperations allTransactions = new TransactionCrudOperations();
-        System.out.println("The list of all transactions : ");
-        allTransactions.findAll() ;
-        List<Transaction> transactions = new ArrayList<>() ;
-        transactions.add(transaction) ;
-        transactions.add(secondTransaction) ;
-        List<Transaction> savedTransactions = allTransactions.saveAll(transactions) ;
-        System.out.println("Saved transactions : ");
-        for (Transaction transaction1 : savedTransactions){
-            System.out.println(savedTransactions);
-        }
+        // Test all method
+        LocalDateTime updatedDate = LocalDateTime.now() ;
+        BigDecimal value1 = new BigDecimal("0") ;
+        Account firstAccount = new Account("Fifaliana" , "General" ,value1, updatedDate ,1 , AccountType.BANK ) ;
+        AccountCrudOperations ac = new AccountCrudOperations() ;
+        ac.save(firstAccount) ;
 
-        transaction.setAmount(1000.0);
-        System.out.println("Transactions modified :");
-        allTransactions.update(transaction) ;
+        BigDecimal value = new BigDecimal("50000") ;
+        Transaction transaction = new Transaction(2, "Depot Account" ,value , updatedDate , TransactionType.CREDIT , "Fifaliana") ;
+        TransactionCrudOperations test = new TransactionCrudOperations() ;
+        test.save(transaction) ;
 
+        LocalDateTime startDate = LocalDateTime.of(2023, 12, 8, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 12, 8, 23, 59, 59);
+
+        List<BalanceHistory> balanceHistories = HistoryCrudOperation.getBalanceHistory("Fifaliana" , startDate , endDate);
+        System.out.println(balanceHistories);
     }
 }
