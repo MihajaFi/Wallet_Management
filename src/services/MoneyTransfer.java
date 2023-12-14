@@ -27,6 +27,20 @@ public class MoneyTransfer {
         if (transferAmount.compareTo(senderBalance) > 0) {
             throw new RuntimeException("Funds insufficient");
         }
+        if(isExpenseCategory(senderCategoryId)){
+            insertTransaction( "Send money", transferAmount, TransactionType.DEBIT, senderId ,senderCategoryId);
+
+        }else{
+            insertTransaction( "Send money", transferAmount, TransactionType.CREDIT, senderId ,senderCategoryId);
+
+        }
+        if (isExpenseCategory(receiverCategoryId)){
+            insertTransaction("Receive money", transferAmount, TransactionType.DEBIT, receivedId ,receiverCategoryId);
+        }else{
+            insertTransaction("Receive money", transferAmount, TransactionType.CREDIT, receivedId ,receiverCategoryId);
+        }
+
+
 
         updateAccountBalance(senderId, senderBalance.subtract(transferAmount));
 
@@ -38,18 +52,9 @@ public class MoneyTransfer {
 
 
 
-        if(isExpenseCategory(senderCategoryId)){
-            insertTransaction( "Send money", transferAmount, TransactionType.DEBIT, senderId ,senderCategoryId);
-        }
-        else {
-            insertTransaction("Send money", transferAmount, TransactionType.CREDIT, senderId ,senderCategoryId);
-        }
-        if(isExpenseCategory(receiverCategoryId)){
-            insertTransaction( "Receive money", transferAmount, TransactionType.DEBIT, receivedId ,receiverCategoryId);
-        }
-        else {
-            insertTransaction("Receive money", transferAmount, TransactionType.CREDIT, receivedId ,receiverCategoryId);
-        }
+
+
+
 
         recordTransferHistory(senderTransactionId ,receiverTransactionId);
 
@@ -166,5 +171,6 @@ public class MoneyTransfer {
             throw new RuntimeException("Error checking category type", e);
         }
     }
+
 
 }
