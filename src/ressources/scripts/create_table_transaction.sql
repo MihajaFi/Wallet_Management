@@ -14,3 +14,6 @@ CREATE TABLE IF NOT EXISTS Transaction (
     id_account VARCHAR(50) REFERENCES Account(id)
 );
 
+
+ALTER TABLE Transaction
+ADD COLUMN IF NOT EXISTS id_category VARCHAR REFERENCES Category(id);
