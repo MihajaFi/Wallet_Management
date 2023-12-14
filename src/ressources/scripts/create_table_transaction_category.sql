@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Category (
 
 
 INSERT INTO Category (id, name, is_income, is_expense)
-SELECT 'Cat1', 'Restaurant', true, false
+SELECT 'Cat1', 'Restaurant', false, true
 WHERE NOT EXISTS (
     SELECT 1 FROM Category
     WHERE id = 'Cat1' AND name = 'Restaurant'
@@ -20,4 +20,11 @@ WHERE NOT EXISTS (
     SELECT 1 FROM Category
     WHERE id = 'Cat2' AND name = 'Telephone'
 );
+
+INSERT INTO Category (id , name , is_income , is_expense)
+SELECT 'Cat3' , 'Salary', true, false
+WHERE NOT EXISTS (
+    SELECT 1 FROM Category
+    WHERE id = 'Cat3' AND name = 'Salary'
+)
 
