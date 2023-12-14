@@ -21,7 +21,7 @@ public class MoneyTransfer {
         connection = connex.createConnection();
     }
 
-    public static void transferMoney(String senderId, String receivedId, BigDecimal transferAmount) throws SQLException {
+    public static void transferMoney(String senderId, String receivedId, BigDecimal transferAmount, String senderCategoryId,String receiverCategoryId) throws SQLException {
         BigDecimal senderBalance = getAccountBalance(senderId);
 
         if (transferAmount.compareTo(senderBalance) > 0) {
@@ -38,8 +38,8 @@ public class MoneyTransfer {
 
 
 
-        insertTransaction(15, "Send money", transferAmount, TransactionType.DEBIT, senderId);
-        insertTransaction(16, "Receive money", transferAmount, TransactionType.CREDIT, receivedId);
+        insertTransaction(15, "Send money", transferAmount, TransactionType.DEBIT, senderId ,senderCategoryId);
+        insertTransaction(16, "Receive money", transferAmount, TransactionType.CREDIT, receivedId ,receiverCategoryId);
         recordTransferHistory(senderTransactionId ,receiverTransactionId);
 
 
@@ -62,14 +62,15 @@ public class MoneyTransfer {
         }
     }
 
-    public static void insertTransaction(int id, String label, BigDecimal amount, TransactionType type, String accountId) throws SQLException {
-        String sql = "INSERT INTO Transaction (id, label, amount, date, type, id_account) VALUES (?, ?, ?, NOW(), ?, ?)";
+    public static void insertTransaction(int id, String label, BigDecimal amount, TransactionType type, String accountId ,String categoryId) throws SQLException {
+        String sql = "INSERT INTO Transaction (id, label, amount, date, type, id_account ,id_category) VALUES (?, ?, ?, NOW(), ?, ?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, label);
             preparedStatement.setBigDecimal(3, amount);
             preparedStatement.setObject(4, type, Types.OTHER);
             preparedStatement.setString(5, accountId);
+            preparedStatement.setString(6 ,categoryId);
             preparedStatement.executeUpdate();
         }
     }
@@ -138,4 +139,21 @@ public class MoneyTransfer {
             }
         }
     }
+
+    private static boolean isExpenseCategory(int categoryId) {
+        String sql = "SELECT is_expense FROM Category WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, categoryId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("is_expense");
+                } else {
+                    throw new RuntimeException("Category not found for id: " + categoryId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking category type", e);
+        }
+    }
+
 }
