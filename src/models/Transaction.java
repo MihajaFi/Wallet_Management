@@ -11,25 +11,18 @@
         private LocalDateTime date;
         private TransactionType type;
         private String idAccount ;
+        private String idCategory ;
 
 
-        public Transaction(int id, String label, BigDecimal amount, LocalDateTime date, TransactionType type,String idAccount) {
+        public Transaction(int id, String label, BigDecimal amount, LocalDateTime date, TransactionType type,String idAccount, String idCategory) {
             this.id = id;
             this.label = label;
             this.amount = amount;
             this.date = date;
             this.type = type;
             this.idAccount = idAccount ;
+            this.idCategory = idCategory ;
         }
-
-        public Transaction(String label, BigDecimal amount, LocalDateTime date, TransactionType type, String idAccount) {
-            this.label = label;
-            this.amount = amount;
-            this.date = date;
-            this.type = type;
-            this.idAccount = idAccount;
-        }
-
         public int getId() {
             return id;
         }
@@ -73,6 +66,11 @@
         public String getIdAccount() {
             return idAccount;
         }
+        public String  getIdCategory(){return idCategory;}
+
+        public void setIdCategory(String idCategory) {
+            this.idCategory = idCategory;
+        }
 
         public void setIdAccount(String idAccount) {
             this.idAccount = idAccount;
@@ -80,12 +78,13 @@
 
         @Override
         public String toString() {
-            return "Transaction{" +
+            return "Transaction = " +
                     "id=" + id +
                     ", label='" + label + '\'' +
                     ", amount=" + amount +
                     ", date=" + date +
                     ", type=" + type +
+                    ", category=" + idCategory +
                     '}';
         }
     }
