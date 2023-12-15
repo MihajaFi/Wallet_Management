@@ -128,7 +128,7 @@ paths:
           type: integer
     get:
       tags:
-        - "Transactions"
+        - "Transaction"
       summary: Retrieve transaction details by id
       responses:
         '200':
