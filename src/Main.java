@@ -24,8 +24,9 @@ public class Main {
 //        LocalDateTime endDate = LocalDateTime.of(2023, 12, 14, 17, 59, 59);
 //        MoneyTransfer.displayTransferHistoryInDateRange(startDate ,endDate);
 
-        AmountFlowTest.FlowTest();
-        CategorySumTest.sumCategoryTest();
+//        AmountFlowTest.FlowTest();
+//        CategorySumTest.sumCategoryTest();
+          CategorySumTest.sumCategoryServiceTest();
 
     }
 }

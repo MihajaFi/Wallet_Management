@@ -207,7 +207,7 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
                     String categoryName = resultSet.getString("name");
                     if ("Restaurant".equals(categoryName)) {
                         restaurantSum = restaurantSum.add(amount);
-                        System.out.println("Restaurant sum : " + restaurantSum );
+                        System.out.println("Restaurant sum : " + restaurantSum);
                     } else if ("Salary".equals(categoryName)) {
                         salarySum = salarySum.add(amount);
                         System.out.println("Salary sum :" + salarySum);
@@ -220,4 +220,27 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
 
         return restaurantSum.add(salarySum);
     }
+
+
+    public List<Transaction> findTransactionsByAccountIdAndDateRange(String accountId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM Transaction WHERE id_account = ? AND date BETWEEN ? AND ?";
+        getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, accountId);
+            preparedStatement.setObject(2, startDate);
+            preparedStatement.setObject(3, endDate);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Transaction transaction = extractTransactionFromResultSet(resultSet);
+                    transactions.add(transaction);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return transactions;
+    }
+
+
 }
