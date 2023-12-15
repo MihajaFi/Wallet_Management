@@ -6,21 +6,173 @@ info:
 servers:
   - url: https://walletManagement.com
 paths:
+  /currency:
+    get:
+      tags:
+        - "Currency"
+      summary: Get all currency
+      description: Get all currency
+      responses:
+        200:
+          description: A list of currency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+    post: 
+      tags:
+        - "Currency"
+      summary: Create a new currency
+      requestBody: 
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Currency"
+      responses:
+        201:
+          description: A list of currency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      tags:
+        - "Currency"
+      summary: Save or Update currency 
+      description: Save list of new currency or update if already exist
+      requestBody: 
+        required: true 
+        description: List of the currency to save or update 
+        content:
+          application/json:
+            schema: 
+              type: array 
+              items: 
+                $ref: '#/components/schemas/Currency'
+      responses:
+        200:
+          description: A list of currency
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /currency/{currencyId}:
+    get:
+      tags:
+        - "Currency"
+      summary: Get one currency
+      description: Get one currency by Id
+      responses:
+        200:
+          description: Currency details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Currency"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
   /account:
     get:
       tags:
         - "Account"
-      summary: Get all account
+      summary: Get all account 
       description: A list of account 
       responses:
         200:
-          description: The list of filtered accounts 
+          description: A list of account 
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Account"
+              schema: 
+                $ref: '#/components/schemas/Account'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
     post: 
       tags:
         - "Account"
@@ -32,7 +184,7 @@ paths:
               schema: 
                 $ref: "#/components/schemas/Account"
       responses:
-        200:
+        201:
           description: Account created successfully
           content:
             application/json:
@@ -42,133 +194,432 @@ paths:
                   $ref: "#/components/schemas/Account"
         400:
           description: Bad request
-  /account/{accountId}:
-    parameters:
-      - name: accountId 
-        in: path 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+    put: 
+      tags:
+        - "Account"
+      summary: Save or Update account 
+      description: Save list of a new account or update if already exist
+      requestBody: 
         required: true
-        description: ID of account
-        schema: 
-          type: integer 
+        description: List of account to save or update
+        content:
+          application/json:
+            schema: 
+              type: array
+              items:
+                $ref: '#/components/schemas/Account'
+      responses:
+        200:
+          description: A list of account 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Account'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /account/{accountId}:
     get:
       tags:
         - "Account"
-      summary: Details of account by Id
+      summary: Get one account
+      description: Get one account by Id
       responses:
-        200: 
+        200:
           description: Account details 
           content:
             application/json:
               schema: 
-                $ref: "#/components/schemas/Account"
-        400:
-          description: Account not found
-    put: 
-      tags:
-        - "Account"
-      summary: Update account details 
-      requestBody: 
-        required: true 
-        content:
-          application/json:
-            schema: 
-              $ref: "#/components/schemas/Account"
-      responses:
-        200:
-          description: Account updated successfully
+                $ref: '#/components/schemas/Account'
         400:
           description: Bad request
-        404:
-          description: Account not found
-    delete: 
-      tags:
-        - "Account"
-      summary: Delete a account by Id 
-      responses:
-        204:
-          description: Account deleted successfully
-        404:
-          description: Account not found
-  /transactions:
-    get:
-      tags:
-        - "Transaction"
-      summary: Retrieve all transactions 
-      responses:
-        200:
-          description: A list of all transactions 
           content:
             application/json:
               schema: 
-                type: array 
-                items: 
-                  $ref: "#/components/schemas/Transaction"
-    post:
-      tags:
-        - "Transaction"
-      summary: Create a new transaction
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Transaction"
-      responses:
-        '201':
-          description: Transaction created successfully
-        '400':
-          description: Bad request
-  /transactions/{transactionId}:
-    parameters:
-      - name: transactionId
-        in: path
-        required: true
-        description: ID of the transaction
-        schema:
-          type: integer
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /transaction:
     get:
       tags:
         - "Transaction"
-      summary: Retrieve transaction details by id
+      summary: Get all transactions 
+      description: A list of transactions
       responses:
-        '200':
+        200:
+          description: A list of transactions 
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Transaction'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError' 
+    post: 
+      tags:
+        - "Transaction"
+      summary: Create a new transaction 
+      requestBody: 
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Transaction'
+      responses:
+        201:
+          description: Transaction created successfully
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      tags:
+        - "Transaction"
+      summary: Save a new transaction or update if already exist 
+      requestBody: 
+        required: true
+        description: List of transaction to save or update
+        content:
+          application/json:
+            schema: 
+              type: array
+              items:
+                $ref: '#/components/schemas/Transaction'
+      responses:
+        200:
+          description: A list of transaction
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /transaction/{transactionId}:
+    get:
+      tags:
+        - "Transaction"
+      summary: Get one transaction
+      description: Get one transaction given by If
+      responses:
+        200:
           description: Transaction details
           content:
             application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
+  /categorysum:
+    get:
+      tags:
+        - "Transaction"
+      summary: Get sum of amounts for a specific category
+      parameters:
+        - in: query
+          name: category_name
+          required: true
+          schema:
+            type: string
+          description: The name of the category for which to calculate the sum of amounts
+      responses:
+        200:
+          description: Sum of amounts for the specified category
+          content:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Transaction"
-        '404':
-          description: Transaction not found
+                type: object
+                properties:
+                  category_name:
+                    type: string
+                    example: "Groceries"
+                  total_amount:
+                    type: number
+                    example: 150.0
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /transfer:
+    get:
+      tags:
+        - "Transfer"
+      summary: Get all transfer 
+      description: A list of transfer 
+      responses:
+        200:
+          description: Transfer details 
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post: 
+      tags:
+        - "Transfer"
+      summary: Create a new transfer 
+      requestBody: 
+          required: true
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Transfer'
+      responses:
+        201:
+          description: Transfer created successfully
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transfer"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BadRequestBody'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ForbiddenBody'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/InternalServerError'
 components:
   schemas:
-    Account: 
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/UserAccount"
-    UserAccount:
+    Currency: 
+      type: object 
+      properties:
+        id: 
+          type: integer
+          example: 1
+        name: 
+          type: string
+          example: Euro
+        code:
+          type: string
+          example: EUR
+    BadRequestBody:
+      example:
+          message: BAD REQUEST
+          body: null
+    ForbiddenBody:
+      example:
+          message: FORBIDDEN
+          body: null
+    InternalServerError:
+      example:
+          message: INTERNAL SERVER ERROR  
+          body: null
+    Account:  
       type: object
       properties:
         id:
           type: integer
+          example: 1
         name:
           type: string
+          example: 'Account Name'
         balance:
           type: number
-          format: float
-        currency:
-          type: string
+          format: double
+          example: 2000.261
+        currencyType:
+          $ref: '#/components/schemas/CurrencyType'
+        currency: 
+          $ref: '#/components/schemas/Currency'
+    CurrencyType:
+      type: string
+      enum:
+        - Banque
+        - Mobile Money
+        - Cash
     Transaction: 
       type: object
       properties:
         id: 
           type: integer
-        description:
+          example: 1
+        label: 
+          type: string 
+          description: Transaction name 
+          example: Bank loan
+        amount:
+          type: number 
+          example: 5000
+        date-time:
           type: string
-        amount: 
+          format: date-time
+        type:
+          type: string
+          enum:
+            - debit
+            - credit
+    Transfer: 
+      type: object
+      properties:
+        id_account_sended:
           type: integer
+          example: 1
+        id_account_received:
+          type: integer
+          example: 2
+        date: 
+          type: string
+          format: date-time
         currency: 
           type: string
-        accountId:
-          type: integer
-        account: 
-          $ref: "#/components/schemas/Account"
+          enum:
+            - Dollar
+            - Euro 
+            - Ariary 
