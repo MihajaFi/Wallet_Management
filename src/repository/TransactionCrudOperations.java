@@ -184,4 +184,40 @@ public class TransactionCrudOperations implements CrudOperations<Transaction> {
                 }
         }
     }
+
+    public BigDecimal getCategorySumByIdAccount(String accountId, LocalDateTime startDate, LocalDateTime endDate) {
+        BigDecimal restaurantSum = BigDecimal.ZERO;
+        BigDecimal salarySum = BigDecimal.ZERO;
+
+        String sql = "SELECT t.amount, c.name " +
+                "FROM Transaction t " +
+                "LEFT JOIN Category c ON t.id_category = c.id " +
+                "WHERE t.id_account = ? AND t.date BETWEEN ? AND ?";
+
+        getConnection();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, accountId);
+            preparedStatement.setObject(2, startDate);
+            preparedStatement.setObject(3, endDate);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    BigDecimal amount = resultSet.getBigDecimal("amount");
+                    String categoryName = resultSet.getString("name");
+                    if ("Restaurant".equals(categoryName)) {
+                        restaurantSum = restaurantSum.add(amount);
+                        System.out.println("Restaurant sum : " + restaurantSum );
+                    } else if ("Salary".equals(categoryName)) {
+                        salarySum = salarySum.add(amount);
+                        System.out.println("Salary sum :" + salarySum);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return restaurantSum.add(salarySum);
+    }
 }
