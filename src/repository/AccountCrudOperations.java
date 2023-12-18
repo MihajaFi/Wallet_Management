@@ -118,4 +118,21 @@ public class AccountCrudOperations implements CrudOperations<Account> {
         }
         return null;
     }
+
+    public Account findById(String accountId) {
+        String sql = "SELECT * FROM Account WHERE id = ?";
+        getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, accountId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return extractAccountFromResultSet(resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

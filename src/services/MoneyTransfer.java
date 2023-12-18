@@ -27,6 +27,12 @@ public class MoneyTransfer {
         if (transferAmount.compareTo(senderBalance) > 0) {
             throw new RuntimeException("Funds insufficient");
         }
+        BigDecimal euroAmount = transferAmount;
+        BigDecimal exchangeRate = getExchangeRate("EUR", "MGA", LocalDateTime.now());
+
+
+        BigDecimal ariaryAmount = euroAmount.multiply(exchangeRate);
+
         if(isExpenseCategory(senderCategoryId)){
             insertTransaction( "Send money", transferAmount, TransactionType.DEBIT, senderId ,senderCategoryId);
 
@@ -35,17 +41,15 @@ public class MoneyTransfer {
 
         }
         if (isExpenseCategory(receiverCategoryId)){
-            insertTransaction("Receive money", transferAmount, TransactionType.DEBIT, receivedId ,receiverCategoryId);
+            insertTransaction("Receive money", ariaryAmount, TransactionType.DEBIT, receivedId ,receiverCategoryId);
         }else{
-            insertTransaction("Receive money", transferAmount, TransactionType.CREDIT, receivedId ,receiverCategoryId);
+            insertTransaction("Receive money", ariaryAmount, TransactionType.CREDIT, receivedId ,receiverCategoryId);
         }
-
-
 
         updateAccountBalance(senderId, senderBalance.subtract(transferAmount));
 
         BigDecimal receiverBalance = getAccountBalance(receivedId);
-        updateAccountBalance(receivedId, receiverBalance.add(transferAmount));
+        updateAccountBalance(receivedId, receiverBalance.add(ariaryAmount));
 
         int senderTransactionId = getLatestTransactionId(senderId);
         int receiverTransactionId = getLatestTransactionId(receivedId);
@@ -152,6 +156,23 @@ public class MoneyTransfer {
                 return resultSet.getBigDecimal(1);
             } else {
                 throw new RuntimeException("Nothing result find");
+            }
+        }
+    }
+    public static BigDecimal getExchangeRate(String fromCurrencyCode, String toCurrencyCode, LocalDateTime date) throws SQLException {
+        String sql = "SELECT exchange_rate FROM CurrencyValue WHERE currency_from = ? AND currency_to = ? AND value_date <= ? ORDER BY value_date DESC LIMIT 1";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, fromCurrencyCode);
+            preparedStatement.setString(2, toCurrencyCode);
+            preparedStatement.setObject(3, date);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBigDecimal("exchange_rate");
+                } else {
+                    throw new RuntimeException("Exchange rate not found for specified currencies and date");
+                }
             }
         }
     }
