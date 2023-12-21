@@ -28,7 +28,7 @@ public class MoneyTransfer {
             throw new RuntimeException("Funds insufficient");
         }
         BigDecimal euroAmount = transferAmount;
-        BigDecimal exchangeRate = getExchangeRate("EUR", "MGA", LocalDateTime.now());
+        BigDecimal exchangeRate = getExchangeRate(2, 1, LocalDateTime.now());
 
 
         BigDecimal ariaryAmount = euroAmount.multiply(exchangeRate);
@@ -53,12 +53,6 @@ public class MoneyTransfer {
 
         int senderTransactionId = getLatestTransactionId(senderId);
         int receiverTransactionId = getLatestTransactionId(receivedId);
-
-
-
-
-
-
 
         recordTransferHistory(senderTransactionId ,receiverTransactionId);
 
@@ -159,12 +153,12 @@ public class MoneyTransfer {
             }
         }
     }
-    public static BigDecimal getExchangeRate(String fromCurrencyCode, String toCurrencyCode, LocalDateTime date) throws SQLException {
+    public static BigDecimal getExchangeRate(int fromCurrencyCode, int toCurrencyCode, LocalDateTime date) throws SQLException {
         String sql = "SELECT exchange_rate FROM CurrencyValue WHERE currency_from = ? AND currency_to = ? AND value_date <= ? ORDER BY value_date DESC LIMIT 1";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, fromCurrencyCode);
-            preparedStatement.setString(2, toCurrencyCode);
+            preparedStatement.setInt(1, fromCurrencyCode);
+            preparedStatement.setInt(2, toCurrencyCode);
             preparedStatement.setObject(3, date);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

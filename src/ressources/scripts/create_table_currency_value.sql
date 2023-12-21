@@ -13,6 +13,6 @@ INSERT INTO CurrencyValue (currency_from, currency_to, exchange_rate, value_date
      4500.00000, '2023-12-18');
 
 INSERT INTO CurrencyValue (currency_from, currency_to, exchange_rate, value_date) VALUES
-    ((SELECT id FROM Currency WHERE code = 'EUR'), -- Euro
-     (SELECT id FROM Currency WHERE code = 'MGA'), -- Ariary
+    ((SELECT id FROM Currency WHERE code = 'EUR'),
+     (SELECT id FROM Currency WHERE code = 'MGA'),
      4600.00000, '2023-12-19');
